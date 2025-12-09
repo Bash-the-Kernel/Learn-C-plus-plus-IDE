@@ -34,9 +34,13 @@ set(HEADERS
     src/ChallengesPanel.h
 )
 
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+add_executable(${PROJECT_NAME} WIN32 ${SOURCES} ${HEADERS})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets)
+
+if(MINGW)
+    target_link_options(${PROJECT_NAME} PRIVATE -Wl,--allow-multiple-definition)
+endif()
 
 # Copy resources to build directory
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD

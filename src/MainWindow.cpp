@@ -6,6 +6,7 @@
 #include "DocsPanel.h"
 #include "LessonsPanel.h"
 #include "ChallengesPanel.h"
+#include <QApplication>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QVBoxLayout>
@@ -371,7 +372,7 @@ void MainWindow::toggleTheme() {
 }
 
 void MainWindow::applyDarkTheme() {
-    qApp->setStyleSheet(R"(
+    qobject_cast<QApplication*>(qApp)->setStyleSheet(R"(
         QMainWindow, QWidget { background-color: #1e1e1e; color: #d4d4d4; }
         QTextEdit, QPlainTextEdit { background-color: #252526; color: #d4d4d4; border: 1px solid #3e3e42; }
         QTreeView { background-color: #252526; color: #d4d4d4; border: 1px solid #3e3e42; }
@@ -388,7 +389,7 @@ void MainWindow::applyDarkTheme() {
 }
 
 void MainWindow::applyLightTheme() {
-    qApp->setStyleSheet(R"(
+    qobject_cast<QApplication*>(qApp)->setStyleSheet(R"(
         QMainWindow, QWidget { background-color: #ffffff; color: #000000; }
         QTextEdit, QPlainTextEdit { background-color: #ffffff; color: #000000; border: 1px solid #cccccc; }
         QTreeView { background-color: #ffffff; color: #000000; border: 1px solid #cccccc; }
