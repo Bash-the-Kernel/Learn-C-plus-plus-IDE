@@ -1,0 +1,13 @@
+build/
+*.exe
+*.o
+*.obj
+*.user
+*.autosave
+CMakeLists.txt.user
+.vscode/
+.idea/
+*.pro.user
+moc_*
+ui_*
+qrc_*
