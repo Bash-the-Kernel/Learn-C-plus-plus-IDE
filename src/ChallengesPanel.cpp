@@ -38,8 +38,8 @@ void ChallengesPanel::setupChallenges() {
     challengesList->addItem("Challenge 1: Sum Two Numbers");
     challengesList->addItem("Challenge 2: Even or Odd");
     challengesList->addItem("Challenge 3: Factorial");
-    challengesList->addItem("Challenge 4: Reverse String");
-    challengesList->addItem("Challenge 5: Find Maximum");
+    challengesList->addItem("Challenge 4: Temperature Converter");
+    challengesList->addItem("Challenge 5: Grade Calculator");
 }
 
 void ChallengesPanel::onChallengeSelected(QListWidgetItem *item) {
@@ -98,6 +98,34 @@ int main() {
         return "<h2>Challenge 3: Factorial</h2>"
                "<p><b>Task:</b> Calculate the factorial of a number.</p>"
                "<p><b>Example:</b> 5! = 5 × 4 × 3 × 2 × 1 = 120</p>";
+    }
+    else if (challengeName.contains("Temperature")) {
+        currentChallengeCode = R"(#include <iostream>
+
+int main() {
+    // TODO: Convert Celsius to Fahrenheit
+    // Formula: F = (C * 9/5) + 32
+    
+    return 0;
+})";
+        currentHint = "Read Celsius temperature, apply formula F = (C * 9/5) + 32, then display result.";
+        return "<h2>Challenge 4: Temperature Converter</h2>"
+               "<p><b>Task:</b> Convert Celsius to Fahrenheit</p>"
+               "<p><b>Formula:</b> F = (C × 9/5) + 32</p>";
+    }
+    else if (challengeName.contains("Grade")) {
+        currentChallengeCode = R"(#include <iostream>
+
+int main() {
+    // TODO: Calculate average of 5 test scores
+    // Display the average and letter grade
+    
+    return 0;
+})";
+        currentHint = "Read 5 scores, add them up, divide by 5 for average. Use if-else for letter grades.";
+        return "<h2>Challenge 5: Grade Calculator</h2>"
+               "<p><b>Task:</b> Calculate average of 5 test scores and assign letter grade</p>"
+               "<p><b>Grading:</b> A(90+), B(80-89), C(70-79), D(60-69), F(below 60)</p>";
     }
     
     return "<p>Select a challenge to view details.</p>";

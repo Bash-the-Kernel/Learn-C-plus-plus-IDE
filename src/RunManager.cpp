@@ -39,8 +39,20 @@ QString RunManager::getExecutablePath(const QString &sourceFile) {
     QString dir = fileInfo.absolutePath();
     
 #ifdef Q_OS_WIN
-    return dir + "/" + baseName + ".exe";
+    QString exePath = dir + "/" + baseName + ".exe";
 #else
-    return dir + "/" + baseName;
+    QString exePath = dir + "/" + baseName;
 #endif
+    
+    // Debug: Check if file exists
+    QFileInfo exeInfo(exePath);
+    if (!exeInfo.exists()) {
+        // Try alternative paths
+        QString altPath = dir + "/" + baseName;
+        if (QFileInfo(altPath).exists()) {
+            return altPath;
+        }
+    }
+    
+    return exePath;
 }

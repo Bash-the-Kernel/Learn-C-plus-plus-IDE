@@ -34,6 +34,11 @@ void BuildSystem::build(const QString &sourceFile) {
     
     if (process->exitCode() == 0) {
         emit outputReceived("Build successful: " + outputPath, false);
+        // Check if file actually exists
+        QFileInfo checkFile(outputPath);
+        if (!checkFile.exists()) {
+            emit outputReceived("Warning: Expected output file not found at: " + outputPath, true);
+        }
     } else {
         emit outputReceived("Build failed with exit code: " + QString::number(process->exitCode()), true);
     }

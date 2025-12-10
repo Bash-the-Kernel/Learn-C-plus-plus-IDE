@@ -196,15 +196,19 @@ void MainWindow::setupSidePanels() {
     sidePanelTabs->addTab(docsPanel, "Docs");
     
     connect(lessonsPanel, &LessonsPanel::loadCodeExample, [this](const QString &code) {
-        if (currentEditor) {
-            currentEditor->setPlainText(code);
-        }
+        EditorWidget *editor = new EditorWidget(this);
+        editor->setPlainText(code);
+        int index = editorTabs->addTab(editor, "example.cpp");
+        editorTabs->setCurrentIndex(index);
+        currentEditor = editor;
     });
     
     connect(challengesPanel, &ChallengesPanel::loadChallenge, [this](const QString &code) {
-        if (currentEditor) {
-            currentEditor->setPlainText(code);
-        }
+        EditorWidget *editor = new EditorWidget(this);
+        editor->setPlainText(code);
+        int index = editorTabs->addTab(editor, "challenge.cpp");
+        editorTabs->setCurrentIndex(index);
+        currentEditor = editor;
     });
 }
 
