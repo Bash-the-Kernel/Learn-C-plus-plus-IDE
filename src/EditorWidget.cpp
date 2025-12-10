@@ -140,6 +140,11 @@ void EditorWidget::mousePressEvent(QMouseEvent *event) {
     highlightMatchingBrackets();
 }
 
+void EditorWidget::paintEvent(QPaintEvent *event) {
+    // Just use default paint - visibility is managed in toggleFold
+    QPlainTextEdit::paintEvent(event);
+}
+
 void EditorWidget::onCursorPositionChanged() {
     QTextCursor cursor = textCursor();
     int line = cursor.blockNumber() + 1;
@@ -153,22 +158,73 @@ void EditorWidget::onModificationChanged(bool changed) {
 }
 
 void EditorWidget::toggleFold(int line) {
-    QTextBlock block = document()->findBlockByLineNumber(line);
-    if (!block.isValid()) return;
+    QTextBlock startBlock = document()->findBlockByLineNumber(line);
+    if (!startBlock.isValid()) return;
     
-    QString text = block.text().trimmed();
-    if (text.contains('{')) {
-        if (foldedBlocks.contains(line)) {
-            foldedBlocks.remove(line);
-        } else {
-            foldedBlocks.insert(line);
+    QString text = startBlock.text().trimmed();
+    if (!text.contains('{')) return;
+    
+    if (foldedBlocks.contains(line)) {
+        // Unfold - restore original visibility
+        QList<int> hiddenLines = foldedBlocks[line];
+        for (int lineNum : hiddenLines) {
+            QTextBlock block = document()->findBlockByLineNumber(lineNum);
+            if (block.isValid()) {
+                // Restore original visibility or true if not tracked
+                bool originalVis = originalVisibility.value(lineNum, true);
+                block.setVisible(originalVis);
+                originalVisibility.remove(lineNum);
+            }
         }
-        viewport()->update();
+        foldedBlocks.remove(line);
+    } else {
+        // Fold - save original visibility and hide lines
+        QTextBlock block = startBlock.next();
+        int braceCount = 1;
+        QList<int> linesToHide;
+        
+        while (block.isValid() && braceCount > 0) {
+            QString blockText = block.text();
+            braceCount += blockText.count('{') - blockText.count('}');
+            
+            if (braceCount > 0) {
+                int blockNum = block.blockNumber();
+                linesToHide.append(blockNum);
+                // Save original visibility before hiding
+                originalVisibility[blockNum] = block.isVisible();
+            }
+            block = block.next();
+        }
+        
+        if (!linesToHide.isEmpty()) {
+            foldedBlocks[line] = linesToHide;
+            // Actually hide the lines
+            for (int lineNum : linesToHide) {
+                QTextBlock block = document()->findBlockByLineNumber(lineNum);
+                if (block.isValid()) {
+                    block.setVisible(false);
+                }
+            }
+        }
     }
+    
+    document()->markContentsDirty(0, document()->characterCount());
+    viewport()->update();
+    lineNumberArea->update();
 }
 
 bool EditorWidget::isBlockFolded(int blockNumber) const {
-    return foldedBlocks.contains(blockNumber);
+    // Check if this line is the start of a folded block
+    if (foldedBlocks.contains(blockNumber)) {
+        return true;
+    }
+    // Check if this line is hidden inside a folded block
+    for (auto it = foldedBlocks.begin(); it != foldedBlocks.end(); ++it) {
+        if (it.value().contains(blockNumber)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void EditorWidget::highlightMatchingBrackets() {
@@ -312,12 +368,12 @@ void EditorWidget::lineNumberAreaPaintEvent(QPaintEvent *event) {
                 painter.drawRect(foldRect);
                 
                 // Draw + or - based on fold state
-                painter.drawLine(foldRect.left() + 3, foldRect.center().y(),
-                               foldRect.right() - 3, foldRect.center().y());
+                painter.drawLine(foldRect.left() + 2, foldRect.center().y(),
+                               foldRect.right() - 2, foldRect.center().y());
                 
                 if (foldedBlocks.contains(blockNumber)) {
-                    painter.drawLine(foldRect.center().x(), foldRect.top() + 3,
-                                   foldRect.center().x(), foldRect.bottom() - 3);
+                    painter.drawLine(foldRect.center().x(), foldRect.top() + 2,
+                                   foldRect.center().x(), foldRect.bottom() - 2);
                 }
             }
             
@@ -378,7 +434,8 @@ FindReplaceDialog::FindReplaceDialog(EditorWidget *editor, QWidget *parent)
     
     // Replace section
     QHBoxLayout *replaceLayout = new QHBoxLayout();
-    replaceLayout->addWidget(new QLabel("Replace:"));
+    replaceLabel = new QLabel("Replace:");
+    replaceLayout->addWidget(replaceLabel);
     replaceLineEdit = new QLineEdit();
     replaceLayout->addWidget(replaceLineEdit);
     mainLayout->addLayout(replaceLayout);
@@ -412,20 +469,24 @@ FindReplaceDialog::FindReplaceDialog(EditorWidget *editor, QWidget *parent)
 }
 
 void FindReplaceDialog::showFind() {
+    replaceLabel->hide();
     replaceLineEdit->hide();
     replaceBtn->hide();
     replaceAllBtn->hide();
     setWindowTitle("Find");
+    resize(400, 100);
     show();
     findLineEdit->setFocus();
     findLineEdit->selectAll();
 }
 
 void FindReplaceDialog::showReplace() {
+    replaceLabel->show();
     replaceLineEdit->show();
     replaceBtn->show();
     replaceAllBtn->show();
     setWindowTitle("Find and Replace");
+    resize(400, 150);
     show();
     findLineEdit->setFocus();
     findLineEdit->selectAll();

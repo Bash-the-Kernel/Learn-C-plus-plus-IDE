@@ -9,6 +9,7 @@
 #include <QCheckBox>
 #include <QTextBlock>
 #include <QInputDialog>
+#include <QLabel>
 
 class SyntaxHighlighter;
 class LineNumberArea;
@@ -50,6 +51,7 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
 
 private slots:
     void updateLineNumberAreaWidth(int newBlockCount);
@@ -68,7 +70,8 @@ private:
     QString m_filePath;
     FindReplaceDialog *findReplaceDialog;
     
-    QSet<int> foldedBlocks;
+    QMap<int, QList<int>> foldedBlocks; // startLine -> list of hidden lines
+    QMap<int, bool> originalVisibility; // track original visibility before folding
     QList<QTextEdit::ExtraSelection> bracketSelections;
 };
 
@@ -96,6 +99,7 @@ private:
     QPushButton *replaceAllBtn;
     QCheckBox *caseSensitiveBox;
     QCheckBox *wholeWordsBox;
+    QLabel *replaceLabel;
 };
 
 class LineNumberArea : public QWidget {
