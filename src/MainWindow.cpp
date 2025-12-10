@@ -105,6 +105,20 @@ void MainWindow::setupMenuBar() {
     QAction *redoAction = editMenu->addAction("&Redo");
     redoAction->setShortcut(QKeySequence::Redo);
     
+    editMenu->addSeparator();
+    
+    QAction *findAction = editMenu->addAction("&Find...");
+    findAction->setShortcut(QKeySequence::Find);
+    connect(findAction, &QAction::triggered, [this]() {
+        if (currentEditor) currentEditor->showFindDialog();
+    });
+    
+    QAction *replaceAction = editMenu->addAction("&Replace...");
+    replaceAction->setShortcut(QKeySequence::Replace);
+    connect(replaceAction, &QAction::triggered, [this]() {
+        if (currentEditor) currentEditor->showReplaceDialog();
+    });
+    
     QMenu *viewMenu = menuBar()->addMenu("&View");
     QAction *themeAction = viewMenu->addAction("Toggle &Theme");
     connect(themeAction, &QAction::triggered, this, &MainWindow::toggleTheme);

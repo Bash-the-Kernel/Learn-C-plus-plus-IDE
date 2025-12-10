@@ -35,7 +35,7 @@ ChallengesPanel::ChallengesPanel(QWidget *parent) : QWidget(parent) {
 }
 
 void ChallengesPanel::setupChallenges() {
-    // Beginner Challenges (1-10)
+    // Basic Challenges (1-10)
     challengesList->addItem("Challenge 1: Sum Two Numbers [Beginner]");
     challengesList->addItem("Challenge 2: Even or Odd [Beginner]");
     challengesList->addItem("Challenge 3: Temperature Converter [Beginner]");
@@ -47,29 +47,12 @@ void ChallengesPanel::setupChallenges() {
     challengesList->addItem("Challenge 9: Leap Year Checker [Beginner]");
     challengesList->addItem("Challenge 10: Prime Number Checker [Beginner]");
     
-    // Intermediate Challenges (11-20)
-    challengesList->addItem("Challenge 11: Palindrome Checker [Intermediate]");
-    challengesList->addItem("Challenge 12: Word Counter [Intermediate]");
-    challengesList->addItem("Challenge 13: Array Statistics [Intermediate]");
-    challengesList->addItem("Challenge 14: String Reverser [Intermediate]");
-    challengesList->addItem("Challenge 15: Fibonacci Sequence [Intermediate]");
-    challengesList->addItem("Challenge 16: Password Validator [Intermediate]");
-    challengesList->addItem("Challenge 17: Text Analyzer [Intermediate]");
-    challengesList->addItem("Challenge 18: Number Pattern [Intermediate]");
-    challengesList->addItem("Challenge 19: Matrix Operations [Intermediate]");
-    challengesList->addItem("Challenge 20: Banking System [Intermediate]");
-    
-    // Advanced Challenges (21-30)
-    challengesList->addItem("Challenge 21: Student Management [Advanced]");
-    challengesList->addItem("Challenge 22: Inventory System [Advanced]");
-    challengesList->addItem("Challenge 23: Sorting Algorithms [Advanced]");
-    challengesList->addItem("Challenge 24: Binary Search [Advanced]");
-    challengesList->addItem("Challenge 25: Linked List [Advanced]");
-    challengesList->addItem("Challenge 26: Stack Implementation [Advanced]");
-    challengesList->addItem("Challenge 27: Queue Implementation [Advanced]");
-    challengesList->addItem("Challenge 28: File Processing [Advanced]");
-    challengesList->addItem("Challenge 29: Game Character System [Advanced]");
-    challengesList->addItem("Challenge 30: Mini Text Editor [Advanced]");
+    // Open-Ended Projects
+    challengesList->addItem("Project 1: Personal Budget Tracker [Project]");
+    challengesList->addItem("Project 2: Text-Based Adventure Game [Project]");
+    challengesList->addItem("Project 3: Library Management System [Project]");
+    challengesList->addItem("Project 4: Weather Data Analyzer [Project]");
+    challengesList->addItem("Project 5: Simple Banking System [Project]");
 }
 
 void ChallengesPanel::onChallengeSelected(QListWidgetItem *item) {
@@ -227,61 +210,273 @@ int main() {
                "<li>Count number of guesses</li><li>Congratulate on correct guess</li></ul>"
                "<p><b>Fun factor:</b> Your first interactive game!</p>";
     }
-    else if (challengeName.contains("Challenge 11:")) {
+    // Challenge 7-10 (add skeleton code for remaining basic challenges)
+    else if (challengeName.contains("Challenge 7:")) {
         currentChallengeCode = R"(#include <iostream>
-#include <string>
 
 int main() {
-    // TODO: Check if a word/phrase is a palindrome
-    // Palindrome reads the same forwards and backwards
-    // Examples: "racecar", "A man a plan a canal Panama"
+    // TODO: Display multiplication table for a given number
+    int number;
     
-    std::string text;
-    std::cout << "Enter text to check: ";
+    std::cout << "Enter a number: ";
+    // Your code here - use a for loop to display table
+    
+    return 0;
+})";
+        currentHint = "Use a for loop from 1 to 10, multiply the number by each value and display the result.";
+        return "<h2>Challenge 7: Multiplication Table [Beginner]</h2>"
+               "<p><b>Task:</b> Display multiplication table for a given number (1-10)</p>";
+    }
+    else if (challengeName.contains("Challenge 8:")) {
+        currentChallengeCode = R"(#include <iostream>
+
+int main() {
+    // TODO: Create a simple calculator (+, -, *, /)
+    double num1, num2;
+    char operation;
+    
+    std::cout << "Enter first number: ";
     // Your code here
     
     return 0;
 })";
-        currentHint = "Convert to lowercase, remove spaces. Compare characters from start and end moving inward. Use two pointers or reverse string.";
-        return "<h2>Challenge 11: Palindrome Checker [Intermediate]</h2>"
-               "<p><b>Difficulty:</b> ⭐⭐⭐ Intermediate</p>"
-               "<p><b>Concepts:</b> Strings, Loops, Character manipulation</p>"
-               "<p><b>Task:</b> Check if text reads the same forwards and backwards</p>"
-               "<p><b>Examples:</b> 'racecar', 'A man a plan a canal Panama'</p>"
-               "<p><b>Challenges:</b> Handle spaces, punctuation, case sensitivity</p>"
-               "<p><b>Algorithm:</b> Two-pointer technique or string reversal</p>";
+        currentHint = "Read two numbers and an operator, use if-else or switch statement to perform the operation.";
+        return "<h2>Challenge 8: Simple Calculator [Beginner]</h2>"
+               "<p><b>Task:</b> Create calculator for basic operations (+, -, *, /)</p>";
     }
-    else if (challengeName.contains("Challenge 21:")) {
+    else if (challengeName.contains("Challenge 9:")) {
         currentChallengeCode = R"(#include <iostream>
-#include <string>
-#include <vector>
-
-// TODO: Create a Student class and management system
-class Student {
-private:
-    // Add member variables: name, id, grades vector
-    
-public:
-    // Add constructor, methods for adding grades, calculating average
-};
 
 int main() {
-    // TODO: Create student management system
-    // Features: Add students, add grades, display info, calculate class average
+    // TODO: Check if a year is a leap year
+    // Rules: Divisible by 4, but not by 100, unless also divisible by 400
+    int year;
+    
+    std::cout << "Enter a year: ";
+    // Your code here
     
     return 0;
 })";
-        currentHint = "Create Student class with name, ID, grades vector. Add methods: addGrade(), getAverage(), display(). Use vector<Student> for multiple students.";
-        return "<h2>Challenge 21: Student Management System [Advanced]</h2>"
-               "<p><b>Difficulty:</b> ⭐⭐⭐⭐ Advanced</p>"
-               "<p><b>Concepts:</b> Classes, Objects, Vectors, Encapsulation</p>"
-               "<p><b>Task:</b> Build a complete student management system</p>"
-               "<p><b>Features:</b></p>"
-               "<ul><li>Student class with name, ID, grades</li>"
-               "<li>Add/remove students</li><li>Add grades to students</li>"
-               "<li>Calculate individual and class averages</li><li>Display student information</li></ul>"
-               "<p><b>Real-world:</b> School management systems, gradebooks</p>";
+        currentHint = "A year is leap if: (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)";
+        return "<h2>Challenge 9: Leap Year Checker [Beginner]</h2>"
+               "<p><b>Task:</b> Determine if a year is a leap year using the leap year rules</p>";
+    }
+    else if (challengeName.contains("Challenge 10:")) {
+        currentChallengeCode = R"(#include <iostream>
+
+int main() {
+    // TODO: Check if a number is prime
+    // Prime: only divisible by 1 and itself
+    int number;
+    
+    std::cout << "Enter a number: ";
+    // Your code here
+    
+    return 0;
+})";
+        currentHint = "Check divisibility from 2 to sqrt(number). If any divides evenly, it's not prime.";
+        return "<h2>Challenge 10: Prime Number Checker [Beginner]</h2>"
+               "<p><b>Task:</b> Determine if a number is prime (only divisible by 1 and itself)</p>";
     }
     
-    return "<p>Select a challenge to view details. 30 challenges available from Beginner to Advanced!</p>";
+    // Open-Ended Projects
+    else if (challengeName.contains("Project 1:")) {
+        currentChallengeCode = R"(#include <iostream>
+#include <vector>
+#include <string>
+
+// TODO: Create a Personal Budget Tracker
+// Features to implement:
+// - Add income/expense entries
+// - Categorize transactions
+// - Calculate monthly totals
+// - Show spending by category
+// - Display budget summary
+
+struct Transaction {
+    // Add: amount, category, description, date
+};
+
+int main() {
+    // Your creative implementation here!
+    // This is an open-ended project - be creative!
+    
+    return 0;
+})";
+        currentHint = "Start with a Transaction struct, use vectors to store data, create a menu system for user interaction.";
+        return "<h2>Project 1: Personal Budget Tracker [Project]</h2>"
+               "<p><b>Type:</b> 🚀 Open-Ended Project</p>"
+               "<p><b>Goal:</b> Build a complete budget tracking application</p>"
+               "<p><b>Core Features:</b></p>"
+               "<ul><li>Add income and expense entries</li>"
+               "<li>Categorize transactions (food, transport, entertainment, etc.)</li>"
+               "<li>Calculate monthly totals and balances</li>"
+               "<li>Show spending breakdown by category</li>"
+               "<li>Display budget summary and warnings</li></ul>"
+               "<p><b>Advanced Features:</b> Save/load data, budget limits, spending trends</p>"
+               "<p><b>Real-world Skills:</b> Data structures, file I/O, user interfaces</p>";
+    }
+    else if (challengeName.contains("Project 2:")) {
+        currentChallengeCode = R"(#include <iostream>
+#include <string>
+#include <map>
+
+// TODO: Create a Text-Based Adventure Game
+// Features to implement:
+// - Multiple rooms/locations
+// - Player inventory system
+// - Interactive story with choices
+// - Combat or puzzle mechanics
+// - Win/lose conditions
+
+class Player {
+    // Add: health, inventory, location, etc.
+};
+
+class Room {
+    // Add: description, exits, items, etc.
+};
+
+int main() {
+    // Your creative game implementation here!
+    // Tell an engaging story with player choices
+    
+    return 0;
+})";
+        currentHint = "Design your story first, then create classes for Player and Room. Use maps for room connections and inventory.";
+        return "<h2>Project 2: Text-Based Adventure Game [Project]</h2>"
+               "<p><b>Type:</b> 🎮 Open-Ended Project</p>"
+               "<p><b>Goal:</b> Create an interactive story-driven game</p>"
+               "<p><b>Core Features:</b></p>"
+               "<ul><li>Multiple connected rooms/locations</li>"
+               "<li>Player character with inventory</li>"
+               "<li>Interactive story with meaningful choices</li>"
+               "<li>Items to collect and use</li>"
+               "<li>Clear win/lose conditions</li></ul>"
+               "<p><b>Creative Elements:</b> Unique story, puzzles, character interactions</p>"
+               "<p><b>Skills:</b> Game design, state management, storytelling</p>";
+    }
+    else if (challengeName.contains("Project 3:")) {
+        currentChallengeCode = R"(#include <iostream>
+#include <vector>
+#include <string>
+
+// TODO: Create a Library Management System
+// Features to implement:
+// - Book catalog with search
+// - Member registration
+// - Check-out/check-in system
+// - Due date tracking
+// - Fine calculation
+
+class Book {
+    // Add: title, author, ISBN, availability, etc.
+};
+
+class Member {
+    // Add: name, ID, borrowed books, fines, etc.
+};
+
+class Library {
+    // Add: books collection, members, management methods
+};
+
+int main() {
+    // Your library system implementation here!
+    
+    return 0;
+})";
+        currentHint = "Start with Book and Member classes, create a Library class to manage everything. Use vectors for collections.";
+        return "<h2>Project 3: Library Management System [Project]</h2>"
+               "<p><b>Type:</b> 📚 Open-Ended Project</p>"
+               "<p><b>Goal:</b> Build a complete library management application</p>"
+               "<p><b>Core Features:</b></p>"
+               "<ul><li>Book catalog with search functionality</li>"
+               "<li>Member registration and profiles</li>"
+               "<li>Check-out and check-in system</li>"
+               "<li>Due date tracking and notifications</li>"
+               "<li>Fine calculation for overdue books</li></ul>"
+               "<p><b>Advanced Features:</b> Book reservations, reading history, reports</p>"
+               "<p><b>Skills:</b> Database design, business logic, user management</p>";
+    }
+    else if (challengeName.contains("Project 4:")) {
+        currentChallengeCode = R"(#include <iostream>
+#include <vector>
+#include <string>
+
+// TODO: Create a Weather Data Analyzer
+// Features to implement:
+// - Store daily weather data
+// - Calculate statistics (avg, min, max)
+// - Identify weather patterns
+// - Generate weather reports
+// - Predict trends
+
+struct WeatherData {
+    // Add: date, temperature, humidity, precipitation, etc.
+};
+
+class WeatherAnalyzer {
+    // Add: data storage, analysis methods
+};
+
+int main() {
+    // Your weather analysis system here!
+    
+    return 0;
+})";
+        currentHint = "Create a WeatherData struct, use vectors for time series data, implement statistical functions for analysis.";
+        return "<h2>Project 4: Weather Data Analyzer [Project]</h2>"
+               "<p><b>Type:</b> 🌤️ Open-Ended Project</p>"
+               "<p><b>Goal:</b> Build a weather data analysis system</p>"
+               "<p><b>Core Features:</b></p>"
+               "<ul><li>Store and manage daily weather data</li>"
+               "<li>Calculate statistics (averages, extremes, trends)</li>"
+               "<li>Identify weather patterns and anomalies</li>"
+               "<li>Generate comprehensive weather reports</li>"
+               "<li>Simple trend prediction</li></ul>"
+               "<p><b>Data Points:</b> Temperature, humidity, precipitation, wind speed</p>"
+               "<p><b>Skills:</b> Data analysis, statistics, scientific computing</p>";
+    }
+    else if (challengeName.contains("Project 5:")) {
+        currentChallengeCode = R"(#include <iostream>
+#include <vector>
+#include <string>
+
+// TODO: Create a Simple Banking System
+// Features to implement:
+// - Account creation and management
+// - Deposit and withdrawal operations
+// - Transfer between accounts
+// - Transaction history
+// - Interest calculation
+
+class Account {
+    // Add: account number, balance, owner, transaction history
+};
+
+class Bank {
+    // Add: accounts management, operations
+};
+
+int main() {
+    // Your banking system implementation here!
+    
+    return 0;
+})";
+        currentHint = "Design Account class with balance and history, create Bank class to manage multiple accounts and operations.";
+        return "<h2>Project 5: Simple Banking System [Project]</h2>"
+               "<p><b>Type:</b> 🏦 Open-Ended Project</p>"
+               "<p><b>Goal:</b> Build a functional banking system simulation</p>"
+               "<p><b>Core Features:</b></p>"
+               "<ul><li>Account creation with unique numbers</li>"
+               "<li>Secure deposit and withdrawal operations</li>"
+               "<li>Money transfer between accounts</li>"
+               "<li>Complete transaction history</li>"
+               "<li>Interest calculation and application</li></ul>"
+               "<p><b>Security:</b> Input validation, balance checks, error handling</p>"
+               "<p><b>Skills:</b> Financial systems, security, data integrity</p>";
+    }
+    
+    return "<p>Select a challenge to view details. 10 basic challenges + 5 open-ended projects available!</p>";
 }

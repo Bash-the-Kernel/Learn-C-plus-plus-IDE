@@ -29,7 +29,7 @@ LessonsPanel::LessonsPanel(QWidget *parent) : QWidget(parent) {
 }
 
 void LessonsPanel::setupLessons() {
-    // Phase 1: Fundamentals (1-15)
+    // Core Fundamentals (1-10)
     lessonsList->addItem("1. Hello World & Compilation");
     lessonsList->addItem("2. Variables & Data Types");
     lessonsList->addItem("3. Constants & Literals");
@@ -40,50 +40,13 @@ void LessonsPanel::setupLessons() {
     lessonsList->addItem("8. For Loops");
     lessonsList->addItem("9. While & Do-While Loops");
     lessonsList->addItem("10. Functions Basics");
-    lessonsList->addItem("11. Function Parameters");
-    lessonsList->addItem("12. Return Values");
-    lessonsList->addItem("13. Scope & Local Variables");
-    lessonsList->addItem("14. Global Variables");
-    lessonsList->addItem("15. Arrays Introduction");
     
-    // Phase 2: Intermediate (16-30)
-    lessonsList->addItem("16. Multidimensional Arrays");
-    lessonsList->addItem("17. C-style Strings");
-    lessonsList->addItem("18. std::string");
-    lessonsList->addItem("19. Debugging Basics");
-    lessonsList->addItem("20. Introduction to OOP");
-    lessonsList->addItem("21. Classes & Objects");
-    lessonsList->addItem("22. Constructors");
-    lessonsList->addItem("23. Destructors");
-    lessonsList->addItem("24. Member Functions");
-    lessonsList->addItem("25. Access Specifiers");
-    lessonsList->addItem("26. Encapsulation");
-    lessonsList->addItem("27. Getters & Setters");
-    lessonsList->addItem("28. Operator Overloading");
-    lessonsList->addItem("29. Inheritance Basics");
-    lessonsList->addItem("30. Polymorphism");
-    
-    // Phase 3: Advanced (31-50)
-    lessonsList->addItem("31. Virtual Functions");
-    lessonsList->addItem("32. Abstract Classes");
-    lessonsList->addItem("33. Friend Functions");
-    lessonsList->addItem("34. Pointers Introduction");
-    lessonsList->addItem("35. Pointer Arithmetic");
-    lessonsList->addItem("36. References");
-    lessonsList->addItem("37. Dynamic Memory");
-    lessonsList->addItem("38. Smart Pointers");
-    lessonsList->addItem("39. STL Vector");
-    lessonsList->addItem("40. STL Array & Deque");
-    lessonsList->addItem("41. STL List & Forward List");
-    lessonsList->addItem("42. STL Algorithms");
-    lessonsList->addItem("43. Iterators");
-    lessonsList->addItem("44. Exception Handling");
-    lessonsList->addItem("45. File I/O");
-    lessonsList->addItem("46. Streams");
-    lessonsList->addItem("47. Templates Basics");
-    lessonsList->addItem("48. Template Specialization");
-    lessonsList->addItem("49. Lambda Expressions");
-    lessonsList->addItem("50. Move Semantics");
+    // Future lessons (commented out for now)
+    // lessonsList->addItem("11. Function Parameters");
+    // lessonsList->addItem("12. Return Values");
+    // lessonsList->addItem("13. Scope & Local Variables");
+    // lessonsList->addItem("14. Global Variables");
+    // lessonsList->addItem("15. Arrays Introduction");
 }
 
 void LessonsPanel::onLessonSelected(QListWidgetItem *item) {
@@ -280,6 +243,134 @@ int main() {
                "<li><code>--var, var--</code> - Pre/post-decrement</li></ul>"
                "<p><b>Integer Division:</b> 10/3 = 3 (not 3.33), use double for decimals</p>";
     }
+    else if (lessonName.contains("6.")) {
+        currentExampleCode = R"(#include <iostream>
+
+int main() {
+    int score;
+    std::cout << "Enter your test score: ";
+    std::cin >> score;
     
-    return "<p>Select a lesson to view content. More lessons available...</p>";
+    if (score >= 90) {
+        std::cout << "Grade: A - Excellent!" << std::endl;
+    }
+    else if (score >= 80) {
+        std::cout << "Grade: B - Good job!" << std::endl;
+    }
+    else if (score >= 70) {
+        std::cout << "Grade: C - Not bad" << std::endl;
+    }
+    else if (score >= 60) {
+        std::cout << "Grade: D - Need improvement" << std::endl;
+    }
+    else {
+        std::cout << "Grade: F - Study harder!" << std::endl;
+    }
+    
+    return 0;
+})";
+        return "<h2>Lesson 6: Conditionals & Comparisons</h2>"
+               "<p>Make decisions with if/else statements.</p>"
+               "<p><b>Comparison Operators:</b> ==, !=, &gt;, &lt;, &gt;=, &lt;=</p>"
+               "<p><b>Structure:</b> if (condition) { code } else { code }</p>";
+    }
+    else if (lessonName.contains("7.")) {
+        currentExampleCode = R"(#include <iostream>
+
+int main() {
+    bool isRaining = true;
+    bool hasUmbrella = false;
+    int temperature = 75;
+    
+    // Logical AND (&&)
+    if (isRaining && hasUmbrella) {
+        std::cout << "Go outside with umbrella" << std::endl;
+    }
+    
+    // Logical OR (||)
+    if (temperature > 80 || temperature < 32) {
+        std::cout << "Extreme weather!" << std::endl;
+    }
+    
+    // Logical NOT (!)
+    if (!isRaining) {
+        std::cout << "No umbrella needed" << std::endl;
+    }
+    
+    return 0;
+})";
+        return "<h2>Lesson 7: Logical Operators</h2>"
+               "<p>Combine multiple conditions with logical operators.</p>"
+               "<p><b>Operators:</b> && (AND), || (OR), ! (NOT)</p>";
+    }
+    else if (lessonName.contains("8.")) {
+        currentExampleCode = R"(#include <iostream>
+
+int main() {
+    // Basic for loop
+    for (int i = 1; i <= 5; i++) {
+        std::cout << "Count: " << i << std::endl;
+    }
+    
+    // Loop with different step
+    std::cout << "Even numbers:" << std::endl;
+    for (int i = 2; i <= 10; i += 2) {
+        std::cout << i << " ";
+    }
+    std::cout << std::endl;
+    
+    return 0;
+})";
+        return "<h2>Lesson 8: For Loops</h2>"
+               "<p>Repeat code a specific number of times.</p>"
+               "<p><b>Syntax:</b> for (init; condition; increment) { code }</p>";
+    }
+    else if (lessonName.contains("9.")) {
+        currentExampleCode = R"(#include <iostream>
+
+int main() {
+    // While loop
+    int count = 1;
+    while (count <= 3) {
+        std::cout << "While count: " << count << std::endl;
+        count++;
+    }
+    
+    // Do-while loop (executes at least once)
+    int num;
+    do {
+        std::cout << "Enter a positive number: ";
+        std::cin >> num;
+    } while (num <= 0);
+    
+    std::cout << "You entered: " << num << std::endl;
+    
+    return 0;
+})";
+        return "<h2>Lesson 9: While & Do-While Loops</h2>"
+               "<p>Repeat code based on conditions.</p>"
+               "<p><b>While:</b> Check condition first</p>"
+               "<p><b>Do-While:</b> Execute once, then check condition</p>";
+    }
+    else if (lessonName.contains("10.")) {
+        currentExampleCode = R"(#include <iostream>
+
+void sayHello() {
+    std::cout << "Hello from function!" << std::endl;
+}
+
+int main() {
+    std::cout << "Before function call" << std::endl;
+    sayHello();
+    std::cout << "After function call" << std::endl;
+    
+    return 0;
+})";
+        return "<h2>Lesson 10: Functions Basics</h2>"
+               "<p>Create reusable blocks of code.</p>"
+               "<p><b>Syntax:</b> returnType functionName() { code }</p>";
+    }
+
+    
+    return "<p>Select a lesson to view content. 10 core lessons available!</p>";
 }

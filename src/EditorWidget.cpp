@@ -2,10 +2,17 @@
 #include "SyntaxHighlighter.h"
 #include <QPainter>
 #include <QTextBlock>
+#include <QKeyEvent>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QTextCursor>
+#include <QTextDocument>
 
 EditorWidget::EditorWidget(QWidget *parent) : QPlainTextEdit(parent) {
     lineNumberArea = new LineNumberArea(this);
     highlighter = new SyntaxHighlighter(document());
+    findReplaceDialog = nullptr;
     
     QFont font("Consolas", 11);
     font.setStyleHint(QFont::Monospace);
@@ -73,6 +80,33 @@ void EditorWidget::highlightCurrentLine() {
     setExtraSelections(extraSelections);
 }
 
+void EditorWidget::keyPressEvent(QKeyEvent *event) {
+    if (event->modifiers() & Qt::ControlModifier) {
+        if (event->key() == Qt::Key_F) {
+            showFindDialog();
+            return;
+        } else if (event->key() == Qt::Key_H) {
+            showReplaceDialog();
+            return;
+        }
+    }
+    QPlainTextEdit::keyPressEvent(event);
+}
+
+void EditorWidget::showFindDialog() {
+    if (!findReplaceDialog) {
+        findReplaceDialog = new FindReplaceDialog(this, this);
+    }
+    findReplaceDialog->showFind();
+}
+
+void EditorWidget::showReplaceDialog() {
+    if (!findReplaceDialog) {
+        findReplaceDialog = new FindReplaceDialog(this, this);
+    }
+    findReplaceDialog->showReplace();
+}
+
 void EditorWidget::lineNumberAreaPaintEvent(QPaintEvent *event) {
     QPainter painter(lineNumberArea);
     painter.fillRect(event->rect(), QColor(30, 30, 30));
@@ -95,4 +129,145 @@ void EditorWidget::lineNumberAreaPaintEvent(QPaintEvent *event) {
         bottom = top + qRound(blockBoundingRect(block).height());
         ++blockNumber;
     }
+}
+
+// FindReplaceDialog Implementation
+FindReplaceDialog::FindReplaceDialog(EditorWidget *editor, QWidget *parent)
+    : QDialog(parent), editor(editor) {
+    setWindowTitle("Find and Replace");
+    setModal(false);
+    resize(400, 150);
+    
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    
+    // Find section
+    QHBoxLayout *findLayout = new QHBoxLayout();
+    findLayout->addWidget(new QLabel("Find:"));
+    findLineEdit = new QLineEdit();
+    findLayout->addWidget(findLineEdit);
+    mainLayout->addLayout(findLayout);
+    
+    // Replace section
+    QHBoxLayout *replaceLayout = new QHBoxLayout();
+    replaceLayout->addWidget(new QLabel("Replace:"));
+    replaceLineEdit = new QLineEdit();
+    replaceLayout->addWidget(replaceLineEdit);
+    mainLayout->addLayout(replaceLayout);
+    
+    // Options
+    QHBoxLayout *optionsLayout = new QHBoxLayout();
+    caseSensitiveBox = new QCheckBox("Case sensitive");
+    wholeWordsBox = new QCheckBox("Whole words");
+    optionsLayout->addWidget(caseSensitiveBox);
+    optionsLayout->addWidget(wholeWordsBox);
+    mainLayout->addLayout(optionsLayout);
+    
+    // Buttons
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    findNextBtn = new QPushButton("Find Next");
+    findPrevBtn = new QPushButton("Find Previous");
+    replaceBtn = new QPushButton("Replace");
+    replaceAllBtn = new QPushButton("Replace All");
+    
+    buttonLayout->addWidget(findNextBtn);
+    buttonLayout->addWidget(findPrevBtn);
+    buttonLayout->addWidget(replaceBtn);
+    buttonLayout->addWidget(replaceAllBtn);
+    mainLayout->addLayout(buttonLayout);
+    
+    connect(findNextBtn, &QPushButton::clicked, this, &FindReplaceDialog::findNext);
+    connect(findPrevBtn, &QPushButton::clicked, this, &FindReplaceDialog::findPrevious);
+    connect(replaceBtn, &QPushButton::clicked, this, &FindReplaceDialog::replace);
+    connect(replaceAllBtn, &QPushButton::clicked, this, &FindReplaceDialog::replaceAll);
+    connect(findLineEdit, &QLineEdit::returnPressed, this, &FindReplaceDialog::findNext);
+}
+
+void FindReplaceDialog::showFind() {
+    replaceLineEdit->hide();
+    replaceBtn->hide();
+    replaceAllBtn->hide();
+    setWindowTitle("Find");
+    show();
+    findLineEdit->setFocus();
+    findLineEdit->selectAll();
+}
+
+void FindReplaceDialog::showReplace() {
+    replaceLineEdit->show();
+    replaceBtn->show();
+    replaceAllBtn->show();
+    setWindowTitle("Find and Replace");
+    show();
+    findLineEdit->setFocus();
+    findLineEdit->selectAll();
+}
+
+void FindReplaceDialog::findNext() {
+    QString searchText = findLineEdit->text();
+    if (searchText.isEmpty()) return;
+    
+    QTextDocument::FindFlags flags = QTextDocument::FindFlag();
+    if (caseSensitiveBox->isChecked())
+        flags |= QTextDocument::FindCaseSensitively;
+    if (wholeWordsBox->isChecked())
+        flags |= QTextDocument::FindWholeWords;
+    
+    if (!editor->find(searchText, flags)) {
+        // Wrap around to beginning
+        QTextCursor cursor = editor->textCursor();
+        cursor.movePosition(QTextCursor::Start);
+        editor->setTextCursor(cursor);
+        editor->find(searchText, flags);
+    }
+}
+
+void FindReplaceDialog::findPrevious() {
+    QString searchText = findLineEdit->text();
+    if (searchText.isEmpty()) return;
+    
+    QTextDocument::FindFlags flags = QTextDocument::FindBackward;
+    if (caseSensitiveBox->isChecked())
+        flags |= QTextDocument::FindCaseSensitively;
+    if (wholeWordsBox->isChecked())
+        flags |= QTextDocument::FindWholeWords;
+    
+    if (!editor->find(searchText, flags)) {
+        // Wrap around to end
+        QTextCursor cursor = editor->textCursor();
+        cursor.movePosition(QTextCursor::End);
+        editor->setTextCursor(cursor);
+        editor->find(searchText, flags);
+    }
+}
+
+void FindReplaceDialog::replace() {
+    QTextCursor cursor = editor->textCursor();
+    if (cursor.hasSelection() && cursor.selectedText() == findLineEdit->text()) {
+        cursor.insertText(replaceLineEdit->text());
+    }
+    findNext();
+}
+
+void FindReplaceDialog::replaceAll() {
+    QString searchText = findLineEdit->text();
+    QString replaceText = replaceLineEdit->text();
+    if (searchText.isEmpty()) return;
+    
+    QTextCursor cursor = editor->textCursor();
+    cursor.movePosition(QTextCursor::Start);
+    editor->setTextCursor(cursor);
+    
+    QTextDocument::FindFlags flags = QTextDocument::FindFlag();
+    if (caseSensitiveBox->isChecked())
+        flags |= QTextDocument::FindCaseSensitively;
+    if (wholeWordsBox->isChecked())
+        flags |= QTextDocument::FindWholeWords;
+    
+    int replacements = 0;
+    while (editor->find(searchText, flags)) {
+        editor->textCursor().insertText(replaceText);
+        replacements++;
+    }
+    
+    // Show result (could add status bar message)
 }
