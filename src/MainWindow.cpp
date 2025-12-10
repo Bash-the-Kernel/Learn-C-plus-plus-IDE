@@ -15,6 +15,9 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDir>
+#include <QKeyEvent>
+#include <QLabel>
+#include <QMenu>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), isDarkTheme(true), currentEditor(nullptr) {
@@ -62,7 +65,11 @@ void MainWindow::setupUI() {
     mainSplitter->setStretchFactor(2, 1);
     
     setCentralWidget(mainSplitter);
+    
+    // Setup status bar with cursor position
     setStatusBar(new QStatusBar(this));
+    cursorPositionLabel = new QLabel("Line: 1, Column: 1");
+    statusBar()->addPermanentWidget(cursorPositionLabel);
 }
 
 void MainWindow::setupMenuBar() {
@@ -75,6 +82,11 @@ void MainWindow::setupMenuBar() {
     QAction *openFileAction = fileMenu->addAction("&Open File");
     openFileAction->setShortcut(QKeySequence::Open);
     connect(openFileAction, &QAction::triggered, this, &MainWindow::openFile);
+    
+    fileMenu->addSeparator();
+    
+    recentFilesMenu = fileMenu->addMenu("Recent Files");
+    recentFilesMenu->setEnabled(false);
     
     QAction *saveAction = fileMenu->addAction("&Save");
     saveAction->setShortcut(QKeySequence::Save);
@@ -117,6 +129,12 @@ void MainWindow::setupMenuBar() {
     replaceAction->setShortcut(QKeySequence::Replace);
     connect(replaceAction, &QAction::triggered, [this]() {
         if (currentEditor) currentEditor->showReplaceDialog();
+    });
+    
+    QAction *goToLineAction = editMenu->addAction("&Go to Line...");
+    goToLineAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_G));
+    connect(goToLineAction, &QAction::triggered, [this]() {
+        if (currentEditor) currentEditor->showGoToLineDialog();
     });
     
     QMenu *viewMenu = menuBar()->addMenu("&View");
@@ -176,20 +194,34 @@ void MainWindow::setupEditor() {
     editorTabs = new QTabWidget(this);
     editorTabs->setTabsClosable(true);
     editorTabs->setMovable(true);
+    editorTabs->setContextMenuPolicy(Qt::CustomContextMenu);
     
     connect(editorTabs, &QTabWidget::tabCloseRequested, [this](int index) {
         QWidget *widget = editorTabs->widget(index);
         editorTabs->removeTab(index);
         delete widget;
+        if (editorTabs->count() == 0) {
+            currentEditor = nullptr;
+            cursorPositionLabel->setText("Line: 1, Column: 1");
+        }
     });
     
     connect(editorTabs, &QTabWidget::currentChanged, [this](int index) {
         if (index >= 0) {
             currentEditor = qobject_cast<EditorWidget*>(editorTabs->widget(index));
+            if (currentEditor) {
+                connect(currentEditor, &EditorWidget::cursorPositionUpdated, 
+                       this, &MainWindow::onCursorPositionUpdated, Qt::UniqueConnection);
+                connect(currentEditor, &EditorWidget::modificationChanged,
+                       this, &MainWindow::onModificationChanged, Qt::UniqueConnection);
+            }
         } else {
             currentEditor = nullptr;
         }
     });
+    
+    connect(editorTabs, &QTabWidget::customContextMenuRequested, 
+           this, &MainWindow::onTabContextMenu);
 }
 
 void MainWindow::setupOutputPanel() {
@@ -231,6 +263,11 @@ void MainWindow::newFile() {
     int index = editorTabs->addTab(editor, "untitled.cpp");
     editorTabs->setCurrentIndex(index);
     currentEditor = editor;
+    
+    connect(editor, &EditorWidget::cursorPositionUpdated, 
+           this, &MainWindow::onCursorPositionUpdated);
+    connect(editor, &EditorWidget::modificationChanged,
+           this, &MainWindow::onModificationChanged);
 }
 
 void MainWindow::openFile() {
@@ -255,12 +292,24 @@ void MainWindow::loadFile(const QString &filePath) {
     EditorWidget *editor = new EditorWidget(this);
     editor->setPlainText(content);
     editor->setFilePath(filePath);
+    editor->setModified(false);
+    
+    connect(editor, &EditorWidget::cursorPositionUpdated, 
+           this, &MainWindow::onCursorPositionUpdated);
+    connect(editor, &EditorWidget::modificationChanged,
+           this, &MainWindow::onModificationChanged);
     
     QFileInfo fileInfo(filePath);
     int index = editorTabs->addTab(editor, fileInfo.fileName());
     editorTabs->setCurrentIndex(index);
     currentEditor = editor;
     currentFilePath = filePath;
+    
+    // Add to recent files
+    recentFiles.removeAll(filePath);
+    recentFiles.prepend(filePath);
+    if (recentFiles.size() > 10) recentFiles.removeLast();
+    updateRecentFilesMenu();
     
     statusBar()->showMessage("Opened: " + filePath, 3000);
 }
@@ -423,9 +472,111 @@ void MainWindow::applyLightTheme() {
     )");
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *event) {
+    if (event->modifiers() & Qt::ControlModifier) {
+        if (event->key() == Qt::Key_Tab) {
+            // Cycle through tabs
+            int currentIndex = editorTabs->currentIndex();
+            int nextIndex = (currentIndex + 1) % editorTabs->count();
+            if (editorTabs->count() > 0) {
+                editorTabs->setCurrentIndex(nextIndex);
+            }
+            return;
+        }
+    }
+    QMainWindow::keyPressEvent(event);
+}
+
+void MainWindow::onTabContextMenu(const QPoint &pos) {
+    int tabIndex = editorTabs->tabBar()->tabAt(pos);
+    if (tabIndex < 0) return;
+    
+    QMenu contextMenu(this);
+    contextMenu.addAction("Close", [this, tabIndex]() {
+        QWidget *widget = editorTabs->widget(tabIndex);
+        editorTabs->removeTab(tabIndex);
+        delete widget;
+    });
+    contextMenu.addAction("Close Others", this, &MainWindow::closeOtherTabs);
+    contextMenu.addAction("Close All", this, &MainWindow::closeAllTabs);
+    
+    contextMenu.exec(editorTabs->tabBar()->mapToGlobal(pos));
+}
+
+void MainWindow::closeCurrentTab() {
+    int index = editorTabs->currentIndex();
+    if (index >= 0) {
+        QWidget *widget = editorTabs->widget(index);
+        editorTabs->removeTab(index);
+        delete widget;
+    }
+}
+
+void MainWindow::closeOtherTabs() {
+    int currentIndex = editorTabs->currentIndex();
+    for (int i = editorTabs->count() - 1; i >= 0; --i) {
+        if (i != currentIndex) {
+            QWidget *widget = editorTabs->widget(i);
+            editorTabs->removeTab(i);
+            delete widget;
+        }
+    }
+}
+
+void MainWindow::closeAllTabs() {
+    while (editorTabs->count() > 0) {
+        QWidget *widget = editorTabs->widget(0);
+        editorTabs->removeTab(0);
+        delete widget;
+    }
+    currentEditor = nullptr;
+}
+
+void MainWindow::onCursorPositionUpdated(int line, int column) {
+    cursorPositionLabel->setText(QString("Line: %1, Column: %2").arg(line).arg(column));
+}
+
+void MainWindow::onModificationChanged() {
+    EditorWidget *editor = qobject_cast<EditorWidget*>(sender());
+    if (!editor) return;
+    
+    int index = editorTabs->indexOf(editor);
+    if (index >= 0) {
+        QString tabText = editorTabs->tabText(index);
+        if (editor->isModified()) {
+            if (!tabText.endsWith("*")) {
+                editorTabs->setTabText(index, tabText + "*");
+            }
+        } else {
+            if (tabText.endsWith("*")) {
+                editorTabs->setTabText(index, tabText.chopped(1));
+            }
+        }
+    }
+}
+
+void MainWindow::updateRecentFilesMenu() {
+    recentFilesMenu->clear();
+    recentFilesMenu->setEnabled(!recentFiles.isEmpty());
+    
+    for (const QString &filePath : recentFiles) {
+        QAction *action = recentFilesMenu->addAction(QFileInfo(filePath).fileName());
+        action->setToolTip(filePath);
+        connect(action, &QAction::triggered, [this, filePath]() {
+            loadFile(filePath);
+        });
+    }
+}
+
 void MainWindow::showAbout() {
     QMessageBox::about(this, "About C++ Learning IDE",
                        "C++ Learning IDE v1.0\n\n"
                        "A beginner-friendly IDE for learning C++\n"
-                       "Built with Qt 6 and C++20");
+                       "Built with Qt 6 and C++20\n\n"
+                       "Features:\n"
+                       "• Code folding (Ctrl+Shift+[/])\n"
+                       "• Bracket matching and auto-close\n"
+                       "• Go to line (Ctrl+G)\n"
+                       "• Find/Replace (Ctrl+F/H)\n"
+                       "• Enhanced tabs with context menu");
 }

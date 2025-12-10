@@ -35,6 +35,12 @@ public:
     
     void toggleFold(int line);
     bool isBlockFolded(int blockNumber) const;
+    
+    // Public accessors for LineNumberArea
+    QTextBlock getFirstVisibleBlock() const { return firstVisibleBlock(); }
+    QRectF getBlockBoundingGeometry(const QTextBlock &block) const { return blockBoundingGeometry(block); }
+    QPointF getContentOffset() const { return contentOffset(); }
+    QRectF getBlockBoundingRect(const QTextBlock &block) const { return blockBoundingRect(block); }
 
 signals:
     void modificationChanged(bool changed);
