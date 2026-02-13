@@ -66,8 +66,8 @@ void LessonsPanel::onLoadExample() {
     }
 }
 QString LessonsPanel::getLessonContent(const QString &lessonName) {
-    // Phase 1: Fundamentals
-    if (lessonName.contains("1.")) {
+    // Use startsWith for exact matching
+    if (lessonName.startsWith("1. ")) {
         currentExampleCode = R"(#include <iostream>
 
 int main() {
@@ -87,7 +87,7 @@ int main() {
                "<li><code>&lt;&lt;</code> - Stream insertion operator</li>"
                "<li><code>std::endl</code> - End line and flush buffer</li></ul>";
     }
-    else if (lessonName.contains("2.")) {
+    else if (lessonName.startsWith("2. ")) {
         currentExampleCode = R"(#include <iostream>
 
 int main() {
@@ -124,7 +124,7 @@ int main() {
                "<p><b>Declaration Syntax:</b> <code>type variableName = value;</code></p>"
                "<p><b>Naming Rules:</b> Start with letter/underscore, no spaces, case-sensitive</p>";
     }
-    else if (lessonName.contains("3.")) {
+    else if (lessonName.startsWith("3. ")) {
         currentExampleCode = R"(#include <iostream>
 
 int main() {
@@ -159,7 +159,7 @@ int main() {
                "<li><b>Character:</b> 'A', '\\n' (escape sequences)</li>"
                "<li><b>String:</b> \"Hello World\"</li></ul>";
     }
-    else if (lessonName.contains("4.")) {
+    else if (lessonName.startsWith("4. ")) {
         currentExampleCode = R"(#include <iostream>
 #include <string>
 
@@ -202,7 +202,7 @@ int main() {
                "<li><code>%</code> Modulo (remainder)</li></ul>"
                "<p><b>Remember:</b> Include <code>&lt;string&gt;</code> for std::string</p>";
     }
-    else if (lessonName.contains("5.")) {
+    else if (lessonName.startsWith("5. ")) {
         currentExampleCode = R"(#include <iostream>
 
 int main() {
@@ -248,7 +248,7 @@ int main() {
                "<li><code>--var, var--</code> - Pre/post-decrement</li></ul>"
                "<p><b>Integer Division:</b> 10/3 = 3 (not 3.33), use double for decimals</p>";
     }
-    else if (lessonName.contains("6.")) {
+    else if (lessonName.startsWith("6. ")) {
         currentExampleCode = R"(#include <iostream>
 
 int main() {
@@ -279,7 +279,7 @@ int main() {
                "<p><b>Comparison Operators:</b> ==, !=, &gt;, &lt;, &gt;=, &lt;=</p>"
                "<p><b>Structure:</b> if (condition) { code } else { code }</p>";
     }
-    else if (lessonName.contains("7.")) {
+    else if (lessonName.startsWith("7. ")) {
         currentExampleCode = R"(#include <iostream>
 
 int main() {
@@ -308,7 +308,7 @@ int main() {
                "<p>Combine multiple conditions with logical operators.</p>"
                "<p><b>Operators:</b> && (AND), || (OR), ! (NOT)</p>";
     }
-    else if (lessonName.contains("8.")) {
+    else if (lessonName.startsWith("8. ")) {
         currentExampleCode = R"(#include <iostream>
 
 int main() {
@@ -330,7 +330,7 @@ int main() {
                "<p>Repeat code a specific number of times.</p>"
                "<p><b>Syntax:</b> for (init; condition; increment) { code }</p>";
     }
-    else if (lessonName.contains("9.")) {
+    else if (lessonName.startsWith("9. ")) {
         currentExampleCode = R"(#include <iostream>
 
 int main() {
@@ -357,7 +357,7 @@ int main() {
                "<p><b>While:</b> Check condition first</p>"
                "<p><b>Do-While:</b> Execute once, then check condition</p>";
     }
-    else if (lessonName.contains("10.")) {
+    else if (lessonName.startsWith("10. ")) {
         currentExampleCode = R"(#include <iostream>
 
 void sayHello() {
@@ -375,7 +375,7 @@ int main() {
                "<p>Create reusable blocks of code.</p>"
                "<p><b>Syntax:</b> returnType functionName() { code }</p>";
     }
-    else if (lessonName.contains("11.")) {
+    else if (lessonName.startsWith("11. ")) {
         currentExampleCode = R"(#include <iostream>
 
 // Function with parameters
@@ -413,7 +413,7 @@ int main() {
                "<p><b>Syntax:</b> returnType name(type param1, type param2)</p>"
                "<p><b>void:</b> Use when function doesn't return anything</p>";
     }
-    else if (lessonName.contains("12.")) {
+    else if (lessonName.startsWith("12. ")) {
         currentExampleCode = R"(#include <iostream>
 
 int main() {
@@ -447,7 +447,7 @@ int main() {
                "<p><b>Fixed Size:</b> Array size cannot change after declaration</p>"
                "<p><b>Warning:</b> No bounds checking - accessing out of range is undefined behavior</p>";
     }
-    else if (lessonName.contains("13.")) {
+    else if (lessonName.startsWith("13. ")) {
         currentExampleCode = R"(#include <iostream>
 #include <string>
 
@@ -485,7 +485,7 @@ int main() {
                "<p><b>Input:</b> Use std::getline() for strings with spaces</p>"
                "<p><b>Comparison:</b> Use ==, !=, &lt;, &gt; operators</p>";
     }
-    else if (lessonName.contains("14.")) {
+    else if (lessonName.startsWith("14. ")) {
         currentExampleCode = R"(#include <iostream>
 #include <vector>
 
@@ -531,7 +531,7 @@ int main() {
                "<li>clear() - Remove all elements</li></ul>"
                "<p><b>Advantage:</b> Automatic memory management</p>";
     }
-    else if (lessonName.contains("15.")) {
+    else if (lessonName.startsWith("15. ")) {
         currentExampleCode = R"(#include <iostream>
 
 // Pass by value (makes a copy)
@@ -573,7 +573,7 @@ int main() {
                "<li>Return multiple values</li></ul>"
                "<p><b>Note:</b> References must be initialized and cannot be reassigned</p>";
     }
-    else if (lessonName.contains("16.")) {
+    else if (lessonName.startsWith("16. ")) {
         currentExampleCode = R"(#include <iostream>
 
 int main() {
@@ -607,7 +607,7 @@ int main() {
                "<p><b>Use Cases:</b> Dynamic memory, arrays, data structures</p>"
                "<p><b>Warning:</b> Dereferencing null/invalid pointers causes crashes</p>";
     }
-    else if (lessonName.contains("17.")) {
+    else if (lessonName.startsWith("17. ")) {
         currentExampleCode = R"(#include <iostream>
 #include <string>
 
@@ -656,7 +656,7 @@ int main() {
                "<p><b>Syntax:</b> class Name { public: members; };</p>"
                "<p><b>Access:</b> Use dot operator (object.member)</p>";
     }
-    else if (lessonName.contains("18.")) {
+    else if (lessonName.startsWith("18. ")) {
         currentExampleCode = R"(#include <iostream>
 #include <string>
 
@@ -700,7 +700,7 @@ int main() {
                "<p><b>Destructor:</b> ~ClassName(), called when object is destroyed</p>"
                "<p><b>Use:</b> Clean up resources (files, memory, etc.)</p>";
     }
-    else if (lessonName.contains("19.")) {
+    else if (lessonName.startsWith("19. ")) {
         currentExampleCode = R"(#include <iostream>
 #include <string>
 
@@ -751,7 +751,7 @@ int main() {
                "<p><b>const:</b> Member functions that don't modify the object</p>"
                "<p><b>Benefits:</b> Data protection, validation, flexibility</p>";
     }
-    else if (lessonName.contains("20.")) {
+    else if (lessonName.startsWith("20. ")) {
         currentExampleCode = R"(#include <iostream>
 #include <fstream>
 #include <string>
