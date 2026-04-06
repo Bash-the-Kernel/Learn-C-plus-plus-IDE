@@ -18,6 +18,7 @@
 #include <QKeyEvent>
 #include <QLabel>
 #include <QMenu>
+#include <QInputDialog>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), isDarkTheme(true), currentEditor(nullptr) {
@@ -247,6 +248,10 @@ void MainWindow::setupSidePanels() {
         int index = editorTabs->addTab(editor, "example.cpp");
         editorTabs->setCurrentIndex(index);
         currentEditor = editor;
+        connect(editor, &EditorWidget::cursorPositionUpdated,
+               this, &MainWindow::onCursorPositionUpdated);
+        connect(editor, &EditorWidget::modificationChanged,
+               this, &MainWindow::onModificationChanged);
     });
     
     connect(challengesPanel, &ChallengesPanel::loadChallenge, [this](const QString &code) {
@@ -255,6 +260,10 @@ void MainWindow::setupSidePanels() {
         int index = editorTabs->addTab(editor, "challenge.cpp");
         editorTabs->setCurrentIndex(index);
         currentEditor = editor;
+        connect(editor, &EditorWidget::cursorPositionUpdated,
+               this, &MainWindow::onCursorPositionUpdated);
+        connect(editor, &EditorWidget::modificationChanged,
+               this, &MainWindow::onModificationChanged);
     });
 }
 
@@ -363,11 +372,11 @@ void MainWindow::newProject() {
     if (dirPath.isEmpty()) return;
     
     QStringList templates = {"Hello World", "Basic IO", "Loops & Conditionals", "Classes & Objects", "Vectors & Strings"};
-    bool ok;
-    QString templateName = QMessageBox::question(this, "Select Template", 
-                                                  "Choose a project template:", 
-                                                  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes 
-                           ? templates[0] : "";
+    bool ok = false;
+    QString templateName = QInputDialog::getItem(this, "Select Template",
+                                                "Choose a project template:",
+                                                templates, 0, false, &ok);
+    if (!ok || templateName.isEmpty()) return;
     
     projectManager->createProject(dirPath, templateName);
     fileExplorer->setRootIndex(fileModel->index(dirPath));
