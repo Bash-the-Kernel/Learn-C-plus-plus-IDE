@@ -52,6 +52,13 @@ void LessonsPanel::setupLessons() {
     lessonsList->addItem("18. Constructors & Destructors");
     lessonsList->addItem("19. Member Functions & Encapsulation");
     lessonsList->addItem("20. File I/O");
+    
+    // Advanced Foundations (21-25)
+    lessonsList->addItem("21. Smart Pointers");
+    lessonsList->addItem("22. Exception Handling");
+    lessonsList->addItem("23. Lambdas & Functional Style");
+    lessonsList->addItem("24. STL Algorithms");
+    lessonsList->addItem("25. Modern C++ Best Practices");
 }
 
 void LessonsPanel::onLessonSelected(QListWidgetItem *item) {
@@ -787,11 +794,149 @@ int main() {
                "<p><b>ofstream:</b> Output file stream (writing)</p>"
                "<p><b>ifstream:</b> Input file stream (reading)</p>"
                "<p><b>Writing:</b> Use &lt;&lt; operator like cout</p>"
-               "<p><b>Reading:</b> Use &gt;&gt; or getline()</p>"
-               "<p><b>Always:</b> Check if file opened successfully</p>"
-               "<p><b>Remember:</b> Close files when done</p>";
+                "<p><b>Reading:</b> Use &gt;&gt; or getline()</p>"
+                "<p><b>Always:</b> Check if file opened successfully</p>"
+                "<p><b>Remember:</b> Close files when done</p>";
+    }
+    else if (lessonName.startsWith("21. ")) {
+        currentExampleCode = R"(#include <iostream>
+#include <memory>
+
+class Student {
+public:
+    Student(const std::string& n) : name(n) {
+        std::cout << "Created " << name << std::endl;
+    }
+    ~Student() {
+        std::cout << "Destroyed " << name << std::endl;
+    }
+private:
+    std::string name;
+};
+
+int main() {
+    std::unique_ptr<Student> uniqueStudent = std::make_unique<Student>("Alice");
+    
+    std::shared_ptr<Student> sharedA = std::make_shared<Student>("Bob");
+    std::shared_ptr<Student> sharedB = sharedA;  // shared ownership
+    std::cout << "Use count: " << sharedA.use_count() << std::endl;
+    
+    return 0;
+})";
+        return "<h2>Lesson 21: Smart Pointers</h2>"
+               "<p>Smart pointers manage memory automatically and prevent leaks.</p>"
+               "<p><b>unique_ptr:</b> Exclusive ownership (fast, lightweight)</p>"
+               "<p><b>shared_ptr:</b> Shared ownership with reference counting</p>"
+               "<p><b>weak_ptr:</b> Non-owning reference to break cycles</p>"
+               "<p><b>Best Practice:</b> Prefer smart pointers over raw new/delete</p>";
+    }
+    else if (lessonName.startsWith("22. ")) {
+        currentExampleCode = R"(#include <iostream>
+#include <stdexcept>
+
+double divide(double a, double b) {
+    if (b == 0.0) {
+        throw std::runtime_error("Division by zero");
+    }
+    return a / b;
+}
+
+int main() {
+    try {
+        std::cout << divide(10, 2) << std::endl;
+        std::cout << divide(10, 0) << std::endl;
+    } catch (const std::runtime_error& ex) {
+        std::cout << "Handled error: " << ex.what() << std::endl;
+    }
+    
+    return 0;
+})";
+        return "<h2>Lesson 22: Exception Handling</h2>"
+               "<p>Exceptions handle unexpected runtime errors safely.</p>"
+               "<p><b>throw:</b> Signals an error</p>"
+               "<p><b>try:</b> Wraps code that may fail</p>"
+               "<p><b>catch:</b> Handles specific exception types</p>"
+               "<p><b>Tip:</b> Catch by const reference for efficiency</p>";
+    }
+    else if (lessonName.startsWith("23. ")) {
+        currentExampleCode = R"(#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    std::vector<int> values = {1, 2, 3, 4, 5};
+    
+    int factor = 3;
+    std::for_each(values.begin(), values.end(), [factor](int v) {
+        std::cout << v * factor << " ";
+    });
+    std::cout << std::endl;
+    
+    auto isEven = [](int n) { return n % 2 == 0; };
+    std::cout << "4 is even? " << (isEven(4) ? "yes" : "no") << std::endl;
+    
+    return 0;
+})";
+        return "<h2>Lesson 23: Lambdas & Functional Style</h2>"
+               "<p>Lambdas are unnamed inline functions.</p>"
+               "<p><b>Syntax:</b> [capture](params) { body }</p>"
+               "<p><b>Capture:</b> Controls which external variables lambdas can use</p>"
+               "<p><b>Common Use:</b> Callbacks, STL algorithms, quick predicates</p>";
+    }
+    else if (lessonName.startsWith("24. ")) {
+        currentExampleCode = R"(#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    std::vector<int> nums = {5, 1, 4, 2, 3};
+    
+    std::sort(nums.begin(), nums.end());
+    
+    auto it = std::find(nums.begin(), nums.end(), 4);
+    if (it != nums.end()) {
+        std::cout << "Found 4 at index " << (it - nums.begin()) << std::endl;
+    }
+    
+    int countEven = std::count_if(nums.begin(), nums.end(), [](int n) {
+        return n % 2 == 0;
+    });
+    std::cout << "Even numbers: " << countEven << std::endl;
+    
+    return 0;
+})";
+        return "<h2>Lesson 24: STL Algorithms</h2>"
+               "<p>The STL provides reusable algorithms for common tasks.</p>"
+               "<p><b>sort:</b> Order a range</p>"
+               "<p><b>find:</b> Search for a value</p>"
+               "<p><b>count_if:</b> Count elements matching a condition</p>"
+               "<p><b>Benefit:</b> Clearer, safer, and often faster code</p>";
+    }
+    else if (lessonName.startsWith("25. ")) {
+        currentExampleCode = R"(#include <iostream>
+#include <vector>
+
+int sum(const std::vector<int>& values) {
+    int total = 0;
+    for (int v : values) {
+        total += v;
+    }
+    return total;
+}
+
+int main() {
+    const std::vector<int> data = {10, 20, 30};
+    std::cout << "Total: " << sum(data) << std::endl;
+    return 0;
+})";
+        return "<h2>Lesson 25: Modern C++ Best Practices</h2>"
+               "<p>Write safer and cleaner C++ with modern conventions.</p>"
+               "<p><b>Use const:</b> Mark values that should not change</p>"
+               "<p><b>Pass by const reference:</b> Avoid unnecessary copies</p>"
+               "<p><b>Prefer range-based loops:</b> Improve readability</p>"
+               "<p><b>Keep functions focused:</b> One clear responsibility each</p>";
     }
 
     
-    return "<p>Select a lesson to view content. 20 comprehensive lessons available!</p>";
+    return "<p>Select a lesson to view content. 25 comprehensive lessons available!</p>";
 }

@@ -353,7 +353,7 @@ When creating a new project, choose from:
 
 After getting comfortable:
 
-1. **Complete all lessons** (1-10)
+1. **Complete all lessons** (1-25)
 2. **Solve all challenges** (1-5)
 3. **Create your own projects**
 4. **Explore C++ documentation**

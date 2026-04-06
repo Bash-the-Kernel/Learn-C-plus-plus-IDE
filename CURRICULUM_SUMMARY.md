@@ -4,9 +4,9 @@
 
 The IDE now has a focused, high-quality curriculum designed for effective C++ learning.
 
-## Lessons (10 Core Fundamentals)
+## Lessons (25 Total)
 
-**Complete and Ready:**
+**Core Fundamentals (1-10):**
 1. **Hello World & Compilation** - Program structure, compilation process
 2. **Variables & Data Types** - int, double, char, bool with examples
 3. **Constants & Literals** - const keyword, different literal formats
@@ -18,10 +18,19 @@ The IDE now has a focused, high-quality curriculum designed for effective C++ le
 9. **While & Do-While Loops** - Condition-based repetition
 10. **Functions Basics** - Function definition and calling
 
-**Future Expansion (Commented Out):**
-- Function Parameters, Return Values, Scope
-- Arrays, Strings, OOP Concepts
-- Pointers, STL, Advanced Topics
+**Intermediate Topics (11-20):**
+- Function Parameters & Return
+- Arrays, Strings, Vectors
+- References and Pointers
+- Classes, constructors, encapsulation
+- File I/O
+
+**Advanced Foundations (21-25):**
+- Smart pointers
+- Exception handling
+- Lambdas and functional style
+- STL algorithms
+- Modern C++ best practices
 
 ## Challenges (15 Total)
 
@@ -61,7 +70,7 @@ All have complete skeleton code, hints, and descriptions:
 ## Key Improvements Made
 
 ### ✅ Quality Over Quantity
-- Focused on 10 solid lessons instead of 50 incomplete ones
+- Focused on 25 solid lessons with progressive depth
 - Each lesson has working, compilable code examples
 - Clear explanations with practical applications
 
@@ -82,7 +91,7 @@ All have complete skeleton code, hints, and descriptions:
 
 ## Educational Philosophy
 
-**Structured Foundation (Lessons 1-10):**
+**Structured Foundation (Lessons 1-25):**
 - Master core concepts with guided examples
 - Build confidence with working code
 - Understand fundamental programming principles
@@ -101,7 +110,7 @@ All have complete skeleton code, hints, and descriptions:
 
 When ready to add more content:
 
-1. **Uncomment lessons 11-15** for intermediate concepts
+1. **Add new advanced lessons beyond 25** for deeper specialization
 2. **Add more project templates** based on student interests
 3. **Create lesson-specific challenges** that directly apply new concepts
 4. **Add difficulty variations** for different learning speeds
